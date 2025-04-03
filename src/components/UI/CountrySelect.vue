@@ -40,11 +40,11 @@ const dropDownToggle = () => {
         @click="dropDownToggle"
         :id="id"
         type="search"
-        class="bg-stone-100 w-full py-1.5 px-3 rounded rounded-r-none focus:outline-none"
+        class="bg-stone-100 w-full py-2.5 px-3 rounded rounded-r-none focus:outline-none"
         :placeholder="placeholder"
         required
       />
-      <button class="w-10 bg-stone-100 py-1.5 rounded-r" type="button">
+      <button class="w-10 bg-stone-100 py-2.5 rounded-r" type="button">
         <ChevronDown v-if="isDropDownOpen" />
         <ChevronUp v-else />
       </button>

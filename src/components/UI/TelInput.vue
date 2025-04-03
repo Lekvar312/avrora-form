@@ -20,7 +20,7 @@ const handlePhoneNumber = () => {
       v-model="phoneNumber"
       :id="id"
       type="tel"
-      class="bg-stone-100 py-1.5 px-3 rounded focus:outline-none"
+      class="bg-stone-100 py-2.5 px-3 rounded focus:outline-none"
       :placeholder="placeholder"
       required
       @blur="handlePhoneNumber"
