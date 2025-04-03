@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-vue-next";
 import { ref } from "vue";
 import Input from "./Input.vue";
 import TelInput from "./TelInput.vue";
+import CountrySelect from "./CountrySelect.vue";
 
 const step = ref(1);
 const progress = ref(2);
@@ -38,10 +39,20 @@ const decrementStep = () => {
       </div>
       <fieldset class="border border-transparent border-b-stone-300">
         <div class="flex flex-col sm:flex-row">
-          <Input label="Як тебе звати" id="name" placeholder="П.І.Б" />
-          <Input label="Місто в якому ти зараз живеш" id="country" placeholder="Наприклад Київ" />
+          <Input label="Як тебе звати" id="name" placeholder="П.І.Б" :is-required="true" />
+          <CountrySelect
+            label="Місто в якому ти зараз живеш"
+            id="country"
+            placeholder="Наприклад Київ"
+          />
         </div>
-        <Input label="Скільки повних років" id="age" placeholder="18" type="number" />
+        <Input
+          label="Скільки повних років"
+          id="age"
+          placeholder="18"
+          type="number"
+          :is-required="true"
+        />
       </fieldset>
       <fieldset class="flex flex-col sm:flex-row">
         <TelInput label="Номер телефону" id="tel" placeholder="+380" />
@@ -50,6 +61,7 @@ const decrementStep = () => {
           id="email"
           placeholder="email@gmail.com"
           type="email"
+          :is-required="true"
         />
       </fieldset>
       <button
