@@ -4,16 +4,16 @@ import { ArrowLeft, Plus, X, Check } from "lucide-vue-next";
 import { ref } from "vue";
 import Input from "./UI/Input.vue";
 import TelInput from "./UI/TelInput.vue";
-import CountrySelect from "./UI/CountrySelect.vue";
+import Select from "./UI/Select.vue";
 import RadioButton from "./UI/RadioButton.vue";
 import Checkbox from "./UI/Checkbox.vue";
+import AddButton from "./UI/AddButton.vue";
 
 const step = ref(1);
 const progress = ref(2);
 const form = ref(null);
 const hasResume = ref(null);
 const dontHaveProfEducation = ref(false);
-const isStuding = ref(false);
 
 const addJob = () => {
   jobs.value.push({ company: "", jobTitle: "", startJob: "", endJob: "", comment: "" });
@@ -29,7 +29,15 @@ const jobs = ref([
   },
 ]);
 
+const policy = ref(false);
+
 const collages = ref([{ collageName: "", proffesion: "", peerStuding: false }]);
+
+const languages = ref([{ name: "", level: "" }]);
+
+const addLanguage = () => {
+  languages.value.push({ name: "", level: "" });
+};
 
 const addCollage = () => {
   collages.value.push({ collageName: "", proffesion: "", peerStuding: false });
@@ -46,6 +54,29 @@ const decrementStep = () => {
   step.value -= 1;
 };
 
+const programs = ref([
+  { name: "1C", value: false },
+  { name: "Google Sheets", value: false },
+  { name: "Microsoft Pack", value: false },
+]);
+
+const cities = [
+  { id: "1", label: "Київ, Київська область" },
+  { id: "2", label: "Львів, Львівська область" },
+  { id: "3", label: "Одеса, Одеська область" },
+  { id: "4", label: "Харків, Харківська область" },
+  { id: "5", label: "Дніпро, Дніпропетровська область" },
+  { id: "6", label: "Чернівці, Чернівецька область" },
+  { id: "7", label: "Полтава, Полтавська область" },
+];
+
+const languageLevel = [
+  { id: "1", label: "low" },
+  { id: "2", label: "middle" },
+  { id: "3", label: "hight" },
+  { id: "4", label: "fluent" },
+];
+
 const progressBar = () => (hasResume.value ? (progress.value = 2) : (progress.value = 5));
 
 const getTitle = () => {
@@ -58,6 +89,8 @@ const getTitle = () => {
       return "Досвід роботи";
     case 4:
       return "Освіта";
+    case 5:
+      return "Навички";
     default:
       return "Розкажи про себе";
   }
@@ -80,7 +113,7 @@ const getTitle = () => {
         <fieldset class="border border-transparent border-b-stone-300">
           <div class="flex flex-col sm:flex-row sm:gap-1">
             <Input label="Як тебе звати" id="name" placeholder="П.І.Б" :is-required="true" />
-            <CountrySelect label="Місто в якому ти зараз живеш" id="country" placeholder="Наприклад Київ" />
+            <Select :data="cities" label="Місто в якому ти зараз живеш" id="country" placeholder="Наприклад Київ" />
           </div>
           <Input label="Скільки повних років" id="age" placeholder="18" type="number" :is-required="true" />
         </fieldset>
@@ -110,10 +143,11 @@ const getTitle = () => {
       </div>
       <div v-if="step === 3" class="flex flex-col gap-4">
         <div v-for="(item, index) in jobs" :key="index">
-          <fieldset class="flex flex-col" :class="index > 0 ? 'border-t border-slate-200' : ''">
+          <fieldset class="flex flex-col">
+            <hr v-if="index > 0" class="border-slate-300" />
             <span class="flex items-end justify-end">
               <button @click="jobs.splice(index, index)" class="mt-2 cursor-pointer" v-if="index > 0">
-                <X class="text-slate-400 items-end justify-end" />
+                <X stroke-width="1.5" class="text-gray-600" />
               </button>
             </span>
             <div class="flex flex-col sm:flex-row sm:gap-1">
@@ -136,27 +170,80 @@ const getTitle = () => {
             </div>
           </fieldset>
         </div>
-        <button @click="addJob()" class="flex max-w-max gap-2 items-center cursor-pointer hover:text-yellow-500">
-          <span class="bg-yellow-300 text-black rounded-full p-1.5"><Plus size="20" stroke-width="1.5" /></span>
-          <span class="text-lg font-light transition-colors">Додати місце роботи</span>
-        </button>
+        <AddButton label="Додати місце роботи" :onAdd="addJob" />
       </div>
       <div v-if="step === 4" class="flex flex-col gap-4">
         <Checkbox label="В мене нема професійної освіти" v-model="dontHaveProfEducation" id="prof-education" />
         <fieldset v-if="!dontHaveProfEducation" class="flex flex-col gap-4">
           <div v-for="(item, index) in collages" :key="index">
-            <Input placeholder="Наприклад, Аврора" label="Навчальний заклад" :id="`school-${index}`" :is-required="true" :is-full="true" />
-            <Input placeholder="Продавець-консультант" label="Спеціальність" :id="`proffesion-${index}`" :is-required="true" :is-full="true" />
-            <Checkbox label="Ще навчаюсь" :id="`peer-studing-${index}`" v-model="item.isStuding" />
+            <hr v-if="index > 0" class="border-slate-300" />
+            <span class="flex justify-end items-end">
+              <button class="cursor-pointer mt-2" v-if="index > 0" @click="collages.splice(index, 1)">
+                <X stroke-width="1.5" class="text-gray-600" />
+              </button>
+            </span>
+            <Input
+              v-model="item.collageName"
+              placeholder="Наприклад, Аврора"
+              label="Навчальний заклад"
+              :id="`school-${index}`"
+              :is-required="true"
+              :is-full="true"
+            />
+            <Input
+              v-model="item.proffesion"
+              placeholder="Продавець-консультант"
+              label="Спеціальність"
+              :id="`proffesion-${index}`"
+              :is-required="true"
+              :is-full="true"
+            />
+            <Checkbox label="Ще навчаюсь" v-model="item.peerStuding" :id="`peer-studing-${index}`" />
           </div>
-          <button @click="addCollage()" class="flex max-w-max gap-2 items-center cursor-pointer hover:text-yellow-500">
-            <span class="bg-yellow-300 text-black rounded-full p-1.5"><Plus size="20" stroke-width="1.5" /></span>
-            <span class="text-lg font-light transition-colors">Додати місце роботи</span>
-          </button>
+          <AddButton label="Додати навчальний заклад" :onAdd="addCollage" />
         </fieldset>
-        <fieldset :class="!dontHaveProfEducation ? 'border-t border-slate-200' : ''">
+        <fieldset>
+          <hr class="border-slate-300" v-if="!dontHaveProfEducation" />
           <Input placeholder="Назва курса" label="Курси і тренінги (якщо є)" id="courses" :is-full="true" />
         </fieldset>
+      </div>
+      <div v-if="step === 5" class="flex flex-col gap-4">
+        <fieldset>
+          <div v-for="(l, index) in languages" :key="index" class="">
+            <hr v-if="index > 0" class="border-slate-300" />
+            <span class="flex justify-end items-end">
+              <button @click="languages.splice(index, index)" v-if="index > 0" class="cursor-pointer my-1">
+                <X stroke-width="1.5" class="text-gray-600" />
+              </button>
+            </span>
+            {{ index }}
+            <Input v-model="l.name" label="Мова" placeholder="Українська" :id="`language-${index}`" :is-full="true" />
+            <Select
+              v-model="l.level"
+              label="Рівень володіння"
+              placeholder="Обери"
+              :id="`language-level-${index}`"
+              :data="languageLevel"
+              :is-full="true"
+            />
+          </div>
+          <AddButton label="Додати мову" :onAdd="addLanguage" />
+        </fieldset>
+        <hr class="border-slate-300" />
+        <fieldset class="flex flex-col gap-2">
+          <label class="text-xs mb-3 font-light">Володіння програмами</label>
+          <Checkbox v-for="(program, index) in programs" :key="index" v-model="program.value" :label="program.name" />
+          <Input placeholder="Інші програми" label="" :is-full="true" id="another-programs" />
+          <Input placeholder="Наприклад, володіння касою" label="Додаткові навички(за бажанням)" id="skills" :is-full="true" />
+        </fieldset>
+        <span class="flex max-w-max flex-col items-end">
+          <RadioButton name="policy" v-model="policy" :value="true" label="Даю згоду на обробку персональних даних" id="policy" />
+          <a
+            class="text-base font-light underline hover:text-yellow-400 transition-colors"
+            href="https://robota.avrora.ua/politika-obrobki-ta-zaxistu-personalnix-danix"
+            >Ознайомитись з політикою конфідеційності</a
+          >
+        </span>
       </div>
       <button
         @click="incrementStep()"

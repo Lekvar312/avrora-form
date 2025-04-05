@@ -10,12 +10,12 @@ defineProps({
 const emit = defineEmits(["update:modelValue"]);
 </script>
 <template>
-  <label :for="id" class="flex items-center gap-2 text-lg cursor-pointer">
+  <label :for="id" class="flex items-center gap-2 cursor-pointer">
     <input
       type="radio"
       :name="name"
       :id="id"
-      :value="value"
+      :value="modelValue"
       class="hidden peer"
       :checked="modelValue === value"
       @change="$emit('update:modelValue', value)"

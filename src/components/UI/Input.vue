@@ -13,7 +13,9 @@ const emit = defineEmits(["update:modelValue"]);
 </script>
 <template>
   <div class="flex flex-col py-3 w-full" :class="!isFull ? 'sm:w-1/2' : ''">
-    <label :for="id" class="text-xs mb-3 relative z-10">{{ label }} <span v-if="isRequired" class="absolut z-20 top-0 px-1">*</span></label>
+    <label :for="id" class="text-xs mb-3 font-light relative z-10"
+      >{{ label }} <span v-if="isRequired" class="absolut z-20 top-0 px-1">*</span></label
+    >
     <input
       :id="id"
       :type="type"
