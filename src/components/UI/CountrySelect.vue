@@ -48,10 +48,7 @@ const dropDownToggle = () => {
         <ChevronDown v-if="isDropDownOpen" />
         <ChevronUp v-else />
       </button>
-      <ul
-        v-if="isDropDownOpen"
-        class="py-2 flex z-20 bg-white flex-col gap-2 absolute top-full w-full shadow-2xl"
-      >
+      <ul v-if="isDropDownOpen" class="py-2 flex z-20 bg-white flex-col gap-2 absolute top-full w-full shadow-2xl">
         <li
           v-for="city in filteredCity"
           :key="city.city"
