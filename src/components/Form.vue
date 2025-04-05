@@ -212,11 +212,10 @@ const getTitle = () => {
           <div v-for="(l, index) in languages" :key="index" class="">
             <hr v-if="index > 0" class="border-slate-300" />
             <span class="flex justify-end items-end">
-              <button @click="languages.splice(index, index)" v-if="index > 0" class="cursor-pointer my-1">
+              <button @click="languages.splice(index, 1)" v-if="index > 0" class="cursor-pointer my-1">
                 <X stroke-width="1.5" class="text-gray-600" />
               </button>
             </span>
-            {{ index }}
             <Input v-model="l.name" label="Мова" placeholder="Українська" :id="`language-${index}`" :is-full="true" />
             <Select
               v-model="l.level"
