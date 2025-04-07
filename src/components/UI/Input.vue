@@ -24,7 +24,7 @@ const emit = defineEmits(["update:modelValue"]);
       :value="modelValue"
       @input="(event) => emit('update:modelValue', event.target.value)"
       :required="isRequired ? true : false"
-      :min="type === 'number' ? 18 : null"
+      :min="type === 'number' ? 18 : undefined"
     />
   </div>
 </template>
