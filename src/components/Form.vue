@@ -1,6 +1,6 @@
 <script setup>
 import { ArrowLeft, Check } from "lucide-vue-next";
-
+import axios from "axios";
 import { ref, reactive, watch, onMounted } from "vue";
 
 import StepOne from "./StepOne.vue";
@@ -9,13 +9,20 @@ import StepThree from "./StepThree.vue";
 import StepFour from "./StepFour.vue";
 import StepFive from "./StepFive.vue";
 
+const step = ref(1);
+const progress = ref(2);
+const form = ref(null);
+
 const formData = reactive({
   name: "",
   country: { id: "", label: "" },
   age: "",
   phoneNumber: "",
   email: "",
-  hasResume: null,
+  resume: {
+    hasResume: null,
+    file: null,
+  },
   jobs: [{ companyName: "", jobTitle: "", startJob: "", endJob: "", comment: "" }],
   dontHaveProfEducation: false,
   educationInstitution: [{ name: "", proffesion: "", stillStuding: false }],
@@ -43,23 +50,28 @@ onMounted(() => {
   if (saveFormData) Object.assign(formData, JSON.parse(saveFormData));
 });
 
-const step = ref(1);
-const progress = ref(2);
-const form = ref(null);
-
 const addItemToArray = (array, newItem) => {
   formData[array].push(newItem);
 };
 
 const incrementStep = () => {
   const isFormValid = form.value.checkValidity();
-  // if (!isFormValid) return;
+  if (!isFormValid) return;
   if (step.value >= progress.value) return false;
   step.value += 1;
 };
 const decrementStep = () => {
   if (step.value <= 1) return false;
   step.value -= 1;
+};
+
+const sendForm = async () => {
+  try {
+    const response = await axios.post("", formData);
+    console.log("Успішно надіслано");
+  } catch (error) {
+    console.error("Не вдалося відправити форму", error);
+  }
 };
 
 const cities = [
@@ -80,8 +92,13 @@ const languageLevel = [
 ];
 
 watch(
-  () => formData.hasResume,
-  (newValue) => (progress.value = newValue ? 2 : 5)
+  () => formData.resume.hasResume,
+  (newValue) => {
+    progress.value = newValue ? 2 : 5;
+    if (!formData.resume.hasResume) {
+      formData.resume.file = null;
+    }
+  }
 );
 
 const getStepTitle = () => {
@@ -120,13 +137,19 @@ const getStepTitle = () => {
       <StepFour v-if="step === 4" v-model="formData" :onAdd="addItemToArray" />
       <StepFive v-if="step === 5" v-model="formData" :selectData="languageLevel" :onAdd="addItemToArray" />
       <button
+        v-if="(step === 2 && formData.resume.hasResume) || step === 5"
+        @click="sendForm"
+        :disabled="step === 5 && !formData.policy"
+        class="bg-yellow-300 border flex items-center justify-center gap-3 border-transparent disabled:opacity-50 cursor-pointer font-bold py-3 rounded-3xl enabled:hover:bg-transparent enabled:hover:border-black transition-all"
+      >
+        <Check stroke-width="1.5" /> Відправити
+      </button>
+      <button
+        v-else
         @click="incrementStep()"
         class="bg-yellow-300 border border-transparent disabled:opacity-50 cursor-pointer font-bold py-3 rounded-3xl enabled:hover:bg-transparent enabled:hover:border-black transition-all"
       >
-        <span v-if="(formData.hasResume && step === 2) || (formData.policy && step === 5)" class="flex items-center justify-center gap-3"
-          ><Check stroke-width="1.5" />Відправити</span
-        >
-        <p v-else>Продовжити</p>
+        Продовжити
       </button>
     </form>
   </section>

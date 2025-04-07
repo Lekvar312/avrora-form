@@ -28,7 +28,7 @@ const addLang = () => {
             <X stroke-width="1.5" class="text-gray-600" />
           </button>
         </span>
-        <Input v-model="item.name" label="Мова" placeholder="Українська" :id="`language-${index}`" :is-full="true" />
+        <Input v-model="item.name" label="Мова" placeholder="Українська" :id="`language-${index}`" :is-required="true" :is-full="true" />
         <Select
           v-model="item.level"
           label="Рівень володіння"

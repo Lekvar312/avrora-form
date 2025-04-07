@@ -1,5 +1,8 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import VueTheMask from "vue-the-mask";
+import "./style.css";
 
-createApp(App).mount('#app')
+const app = createApp(App);
+app.use(VueTheMask);
+app.mount("#app");
