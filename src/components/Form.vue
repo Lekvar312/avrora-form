@@ -67,7 +67,7 @@ const decrementStep = () => {
 
 const sendForm = async () => {
   try {
-    const response = await axios.post("", formData);
+    const response = await axios.post("http://localhost:5173/", formData);
     console.log("Успішно надіслано");
   } catch (error) {
     console.error("Не вдалося відправити форму", error);
@@ -127,7 +127,7 @@ const getStepTitle = () => {
       <span v-show="step > 1" class="h-full w-0.5 bg-slate-200"></span>
       <h1 class="font-bold text-lg">{{ getStepTitle() }}</h1>
     </div>
-    <form @submit.prevent="" ref="form" class="flex h-full flex-col gap-4 w-full">
+    <form ref="form" class="flex h-full flex-col gap-4 w-full">
       <div class="flex h-1 py-3 gap-2">
         <span v-for="(bar, index) in progress" class="h-1 bg-stone-200 rounded-full w-full" :class="{ 'bg-yellow-300': index + 1 === step }"></span>
       </div>
@@ -138,7 +138,8 @@ const getStepTitle = () => {
       <StepFive v-if="step === 5" v-model="formData" :selectData="languageLevel" :onAdd="addItemToArray" />
       <button
         v-if="(step === 2 && formData.resume.hasResume) || step === 5"
-        @click="sendForm"
+        @click.prevent="sendForm"
+        type="submit"
         :disabled="step === 5 && !formData.policy"
         class="bg-yellow-300 border flex items-center justify-center gap-3 border-transparent disabled:opacity-50 cursor-pointer font-bold py-3 rounded-3xl enabled:hover:bg-transparent enabled:hover:border-black transition-all"
       >
@@ -146,7 +147,7 @@ const getStepTitle = () => {
       </button>
       <button
         v-else
-        @click="incrementStep()"
+        @click.prevent="incrementStep()"
         class="bg-yellow-300 border border-transparent disabled:opacity-50 cursor-pointer font-bold py-3 rounded-3xl enabled:hover:bg-transparent enabled:hover:border-black transition-all"
       >
         Продовжити

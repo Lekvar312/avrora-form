@@ -12,7 +12,7 @@ const props = defineProps({
   modelValue: { type: Object, required: true },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits("update:modelValue");
 
 const isDropDownOpen = ref(false);
 

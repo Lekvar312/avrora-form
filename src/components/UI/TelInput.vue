@@ -6,7 +6,7 @@ defineProps({
   modelValue: { type: String },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits("update:modelValue");
 </script>
 
 <template>

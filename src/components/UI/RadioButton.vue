@@ -7,7 +7,7 @@ defineProps({
   modelValue: { type: Boolean, required: true },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits("update:modelValue");
 </script>
 <template>
   <label :for="id" class="flex items-center gap-2 cursor-pointer">

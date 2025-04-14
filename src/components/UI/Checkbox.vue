@@ -6,7 +6,7 @@ defineProps({
   modelValue: { type: Boolean, required: true },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits("update:modelValue");
 </script>
 <template>
   <span class="max-w-max">
