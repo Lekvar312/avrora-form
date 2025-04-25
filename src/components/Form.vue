@@ -55,8 +55,10 @@ const addItemToArray = (array, newItem) => {
 };
 
 const incrementStep = () => {
-  const isFormValid = form.value.checkValidity();
-  if (!isFormValid) return;
+  const isFormValid = formValidation();
+  if (!isFormValid) {
+    return;
+  }
   if (step.value >= progress.value) return false;
   step.value += 1;
 };
@@ -65,7 +67,28 @@ const decrementStep = () => {
   step.value -= 1;
 };
 
+const formValidation = () => {
+  const fields = form.value.querySelectorAll("[required]");
+  let isValid = true;
+  for (const field of fields) {
+    if (!field.attachedListener) {
+      field.addEventListener("input", () => {
+        if (field.checkValidity()) {
+          field.classList.remove("border-2", "border-red-400");
+        }
+      });
+    }
+    if (!field.checkValidity()) {
+      field.reportValidity();
+      field.classList.add("border-2", "border-red-400");
+      isValid = false;
+    }
+  }
+  return isValid;
+};
+
 const sendForm = async () => {
+  if (!formValidation()) return;
   try {
     const response = await axios.post("http://localhost:5173/", formData);
     console.log("Успішно надіслано");
@@ -140,7 +163,7 @@ const getStepTitle = () => {
         v-if="(step === 2 && formData.resume.hasResume) || step === 5"
         @click.prevent="sendForm"
         type="submit"
-        :disabled="step === 5 && !formData.policy"
+        :disabled="step === 5 && !formData.policy && !formValidation()"
         class="bg-yellow-300 border flex items-center justify-center gap-3 border-transparent disabled:opacity-50 cursor-pointer font-bold py-3 rounded-3xl enabled:hover:bg-transparent enabled:hover:border-black transition-all"
       >
         <Check stroke-width="1.5" /> Відправити
